@@ -7,6 +7,14 @@ const apiRouter = require('./routes/api')
 
 const app = express()
 
+// FCC often uses http://localhost:3000/ which becomes //api/... without this
+app.use((req, res, next) => {
+  const [path, query] = req.url.split('?')
+  const normalized = path.replace(/\/{2,}/g, '/')
+  req.url = query ? `${normalized}?${query}` : normalized
+  next()
+})
+
 app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static('public'))
